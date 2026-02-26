@@ -83,7 +83,7 @@ export const documentsTable = pgTable("documents", {
   description: text("description"),
 
   // Source tracking
-  source: text("source").notNull(), 
+  source: text("source"), 
   sourceUrl: text("source_url"),
 
   // Versioning
@@ -94,6 +94,7 @@ export const documentsTable = pgTable("documents", {
   userId: text("userId").references(() => user.id, { onDelete: "cascade" }).notNull(),
 
   // Stats
+  documentType: text("document_type").notNull(),
   chunkCount: integer("chunk_count").default(0),
   tokenCount: integer("token_count"),
   size: text("size").notNull(),
