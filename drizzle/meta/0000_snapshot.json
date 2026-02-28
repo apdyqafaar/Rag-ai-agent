@@ -1,5 +1,5 @@
 {
-  "id": "70048d01-691d-4a83-bc2d-4a23dd822f70",
+  "id": "3feb076f-449e-40d7-9b79-913786574d15",
   "prevId": "00000000-0000-0000-0000-000000000000",
   "version": "7",
   "dialect": "postgresql",
@@ -152,7 +152,7 @@
           "name": "source",
           "type": "text",
           "primaryKey": false,
-          "notNull": true
+          "notNull": false
         },
         "source_url": {
           "name": "source_url",
@@ -175,6 +175,12 @@
         },
         "userId": {
           "name": "userId",
+          "type": "text",
+          "primaryKey": false,
+          "notNull": true
+        },
+        "document_type": {
+          "name": "document_type",
           "type": "text",
           "primaryKey": false,
           "notNull": true

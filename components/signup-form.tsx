@@ -16,13 +16,14 @@ import { useForm } from "react-hook-form"
 import { zodResolver } from "@hookform/resolvers/zod"
 import { Form, FormControl, FormField, FormItem, FormLabel, FormMessage } from "./ui/form"
 import Link from "next/link"
-import { useRegister } from "@/lib/hooks/auth/useAuth"
+import { useRegister, useSocialLogin } from "@/lib/hooks/auth/useAuth"
 import { useState } from "react"
 import { toast } from "sonner"
 
 export function SignupForm({ ...props }: React.ComponentProps<typeof Card>) {
   const router=useRouter() 
   const [isLoading, setIsLoading]=useState(false)
+  const [socialLoading, setIsSocialLoading]=useState(false)
 
   // use form
   const form=useForm<RegisterFormValue>({
@@ -59,6 +60,18 @@ export function SignupForm({ ...props }: React.ComponentProps<typeof Card>) {
     }
   } 
 
+  // social login
+  const handleSocialLogin=async ()=>{
+    
+    try {
+      setIsSocialLoading(true)
+      await useSocialLogin("google")
+    } catch (error) {
+      setIsSocialLoading(false)
+    }finally{
+      setIsSocialLoading(false)
+    }
+  }
 
   return (
     <Card {...props}>
@@ -129,8 +142,8 @@ export function SignupForm({ ...props }: React.ComponentProps<typeof Card>) {
           }
          
         </Button>
-          <Button variant="outline" className="w-full" type="button" >
-                  Sign up with Google
+          <Button variant="outline" className="w-full" type="button" disabled={socialLoading} onClick={handleSocialLogin}>
+                  {socialLoading?"Signing up with Google":"Sign up with Google"}
                 </Button>
         <div className="text-center text-sm text-muted-foreground">
           Already have an account?{" "}

@@ -58,5 +58,13 @@ export class AuthService{
                return {success:false, error:error.message || "Something went wrong"}
           }
      }
+
+     // social login
+     async socialLogin(provider:"google"){
+           const data = await authClient.signIn.social({
+    provider,
+    callbackURL:"/dashboard"
+  });
+     }
 }
 export const authService=new AuthService()

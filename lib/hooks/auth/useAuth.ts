@@ -10,3 +10,8 @@ export const useRegister= async(data:RegisterFormValue)=>{
 export const useLogin= async(data:LoginFormValue)=>{
     return authService.login(data)
 }
+
+// login social
+export const useSocialLogin= async(provider:"google")=>{
+    return authService.socialLogin(provider)
+}

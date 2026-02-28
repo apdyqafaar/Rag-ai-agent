@@ -5,15 +5,8 @@
     {
       "idx": 0,
       "version": "7",
-      "when": 1770664705230,
-      "tag": "0000_spotty_grey_gargoyle",
-      "breakpoints": true
-    },
-    {
-      "idx": 1,
-      "version": "7",
-      "when": 1772045689304,
-      "tag": "0001_pretty_shockwave",
+      "when": 1772268687424,
+      "tag": "0000_pretty_moondragon",
       "breakpoints": true
     }
   ]
