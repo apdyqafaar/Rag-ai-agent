@@ -1,8 +1,11 @@
 import { NextRequest, NextResponse } from "next/server";
-import { getSessionCookie } from "better-auth/cookies";
+import { auth } from "./lib";
+import { headers } from "next/headers";
 
 export async function proxy(request: NextRequest) {
-	const sessionCookie = getSessionCookie(request);
+	const sessionCookie = await auth.api.getSession({
+        headers:await headers()
+    })
 
     // THIS IS NOT SECURE!
     // This is the recommended approach to optimistically redirect users

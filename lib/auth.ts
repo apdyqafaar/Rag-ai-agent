@@ -4,6 +4,8 @@ import { drizzleAdapter } from "better-auth/adapters/drizzle";
 import {schema} from "../db/schema/index"
 import { nextCookies } from "better-auth/next-js";
 import { db } from "@/db/db";
+import { admin as adminPlugin } from "better-auth/plugins"
+import {ac, admin, moderator, user} from "./permissions"
 
 export const auth = betterAuth({
     database: drizzleAdapter(db, {
@@ -30,11 +32,18 @@ export const auth = betterAuth({
     session:{
         cookieCache:{
             enabled:true,
-            maxAge:5 * 60
+            maxAge:5 * 10
         }
     },
 
-      plugins: [nextCookies()],
+      plugins: [adminPlugin({
+        ac,
+        roles:{
+            admin,
+            user,
+            moderator
+        }
+      }) , nextCookies()],
 });
 
 export type ErrorCode = keyof typeof auth.$ERROR_CODES | "UNKNOWN"

@@ -8,6 +8,27 @@
       "when": 1772268687424,
       "tag": "0000_pretty_moondragon",
       "breakpoints": true
+    },
+    {
+      "idx": 1,
+      "version": "7",
+      "when": 1772649929780,
+      "tag": "0001_normal_ben_urich",
+      "breakpoints": true
+    },
+    {
+      "idx": 2,
+      "version": "7",
+      "when": 1772652745421,
+      "tag": "0002_square_havok",
+      "breakpoints": true
+    },
+    {
+      "idx": 3,
+      "version": "7",
+      "when": 1772655664195,
+      "tag": "0003_real_smiling_tiger",
+      "breakpoints": true
     }
   ]
 }
