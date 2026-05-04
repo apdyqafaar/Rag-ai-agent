@@ -61,10 +61,20 @@ export class AuthService{
 
      // social login
      async socialLogin(provider:"google"){
-           const data = await authClient.signIn.social({
+       await authClient.signIn.social({
     provider,
     callbackURL:"/dashboard"
   });
+     }
+
+
+     // logout
+     async logout(){
+       const {error}= await authClient.signOut()
+       if(error){
+        return {success:false, error:error.message||"Failed to logout!"}
+       }
+       return {success:true}
      }
 }
 export const authService=new AuthService()

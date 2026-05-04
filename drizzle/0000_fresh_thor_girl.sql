@@ -1,3 +1,5 @@
+CREATE TYPE "public"."document_status" AS ENUM('processing', 'failed', 'completed', 'uploading');--> statement-breakpoint
+CREATE TYPE "public"."user_role" AS ENUM('user', 'admin', 'moderator');--> statement-breakpoint
 CREATE TABLE "account" (
 	"id" text PRIMARY KEY NOT NULL,
 	"account_id" text NOT NULL,
@@ -23,10 +25,15 @@ CREATE TABLE "documents" (
 	"version" text,
 	"is_active" boolean DEFAULT true,
 	"userId" text NOT NULL,
+	"status" "document_status" DEFAULT 'processing' NOT NULL,
 	"document_type" text NOT NULL,
 	"chunk_count" integer DEFAULT 0,
 	"token_count" integer,
+	"content_length" integer DEFAULT 0,
+	"vector_count" integer DEFAULT 0,
 	"size" text NOT NULL,
+	"progress" integer DEFAULT 0 NOT NULL,
+	"completed_at" timestamp,
 	"created_at" timestamp DEFAULT now() NOT NULL,
 	"updated_at" timestamp NOT NULL
 );
@@ -40,6 +47,7 @@ CREATE TABLE "session" (
 	"ip_address" text,
 	"user_agent" text,
 	"user_id" text NOT NULL,
+	"impersonated_by" text,
 	CONSTRAINT "session_token_unique" UNIQUE("token")
 );
 --> statement-breakpoint
@@ -51,6 +59,10 @@ CREATE TABLE "user" (
 	"image" text,
 	"created_at" timestamp DEFAULT now() NOT NULL,
 	"updated_at" timestamp DEFAULT now() NOT NULL,
+	"role" "user_role" DEFAULT 'user' NOT NULL,
+	"banned" boolean DEFAULT false,
+	"ban_reason" text,
+	"ban_expires" timestamp,
 	CONSTRAINT "user_email_unique" UNIQUE("email")
 );
 --> statement-breakpoint

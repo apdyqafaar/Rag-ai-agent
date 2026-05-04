@@ -18,11 +18,12 @@ import { Form, FormControl, FormField, FormItem, FormLabel, FormMessage } from "
 import Link from "next/link"
 import { useState } from "react"
 import { toast } from "sonner"
-import { useLogin } from "@/lib/hooks/auth/useAuth"
+import { useLogin, useSocialLogin } from "@/lib/hooks/auth/useAuth"
 
 export function SigninForm({ ...props }: React.ComponentProps<typeof Card>) {
   const router=useRouter() 
   const [isLoading, setIsLoading]=useState(false)
+  const [isSocialLoading, setIsSocialLoading]=useState(false)
 
   // use form
   const form=useForm<LoginFormValue>({
@@ -58,7 +59,18 @@ export function SigninForm({ ...props }: React.ComponentProps<typeof Card>) {
     }
   } 
 
-
+  // social login
+  const handleSocialLogin=async ()=>{
+    
+    try {
+      setIsSocialLoading(true)
+      await useSocialLogin("google")
+    } catch (error) {
+      setIsSocialLoading(false)
+    }finally{
+      setIsSocialLoading(false)
+    }
+  }
   return (
     <Card {...props}>
       <Form {...form}>
@@ -117,8 +129,20 @@ export function SigninForm({ ...props }: React.ComponentProps<typeof Card>) {
           }
          
         </Button>
-          <Button variant="outline" className="w-full" type="button" >
+          <Button disabled={isSocialLoading} onClick={handleSocialLogin} variant="outline" className="w-full" type="button" >
+                 {isSocialLoading?(
+                  <>
+                  <Loader2 className="animate-spin w-4 h-4"/>
+                  Signing in...
+                  </>
+                 ):
+                 (
+                  <>
+                  
                   Sign in with Google
+                  </>
+                 )
+                 }
                 </Button>
         <div className="text-center text-sm text-muted-foreground">
           if you don`t have an account?{" "}

@@ -1,6 +1,6 @@
 {
-  "id": "79658a49-09c3-45a8-9323-8a9ddd5d9c7f",
-  "prevId": "689f34c7-0283-4fe9-893a-212160113c1c",
+  "id": "fa74c16a-4fec-43c1-b854-eb157011b9a2",
+  "prevId": "285eec61-89ae-43b1-8fb4-00fa21862afa",
   "version": "7",
   "dialect": "postgresql",
   "tables": {
@@ -179,6 +179,14 @@
           "primaryKey": false,
           "notNull": true
         },
+        "status": {
+          "name": "status",
+          "type": "document_status",
+          "typeSchema": "public",
+          "primaryKey": false,
+          "notNull": true,
+          "default": "'processing'"
+        },
         "document_type": {
           "name": "document_type",
           "type": "text",
@@ -198,11 +206,38 @@
           "primaryKey": false,
           "notNull": false
         },
+        "content_length": {
+          "name": "content_length",
+          "type": "integer",
+          "primaryKey": false,
+          "notNull": false,
+          "default": 0
+        },
+        "vector_count": {
+          "name": "vector_count",
+          "type": "integer",
+          "primaryKey": false,
+          "notNull": false,
+          "default": 0
+        },
         "size": {
           "name": "size",
           "type": "text",
           "primaryKey": false,
           "notNull": true
+        },
+        "progress": {
+          "name": "progress",
+          "type": "integer",
+          "primaryKey": false,
+          "notNull": true,
+          "default": 0
+        },
+        "completed_at": {
+          "name": "completed_at",
+          "type": "timestamp",
+          "primaryKey": false,
+          "notNull": false
         },
         "created_at": {
           "name": "created_at",
@@ -397,9 +432,11 @@
         },
         "role": {
           "name": "role",
-          "type": "text",
+          "type": "user_role",
+          "typeSchema": "public",
           "primaryKey": false,
-          "notNull": false
+          "notNull": true,
+          "default": "'user'"
         },
         "banned": {
           "name": "banned",
@@ -505,7 +542,27 @@
       "isRLSEnabled": false
     }
   },
-  "enums": {},
+  "enums": {
+    "public.document_status": {
+      "name": "document_status",
+      "schema": "public",
+      "values": [
+        "processing",
+        "failed",
+        "completed",
+        "uploading"
+      ]
+    },
+    "public.user_role": {
+      "name": "user_role",
+      "schema": "public",
+      "values": [
+        "user",
+        "admin",
+        "moderator"
+      ]
+    }
+  },
   "schemas": {},
   "sequences": {},
   "roles": {},

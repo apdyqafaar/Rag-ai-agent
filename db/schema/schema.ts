@@ -1,7 +1,17 @@
-import { relations } from "drizzle-orm";
+import { InferModel, relations } from "drizzle-orm";
 import { pgTable, text, timestamp, boolean, index, integer, pgEnum } from "drizzle-orm/pg-core";
 
-;
+export const userRole=pgEnum("user_role",[
+  "user",
+  "admin",
+  "moderator"
+])
+export const documentStatusEnum=pgEnum('document_status',[
+  "processing",
+  "failed",
+  "completed",
+  "uploading"
+])
 export const user = pgTable("user", {
   id: text("id").primaryKey(),
   name: text("name").notNull(),
@@ -13,13 +23,12 @@ export const user = pgTable("user", {
     .defaultNow()
     .$onUpdate(() => /* @__PURE__ */ new Date())
     .notNull(),
-   role: text("role")
-    .default("user")         // Default value
-    .$type<"user" | "admin" | "moderator">(), // Enum types
+   role: userRole("role").default("user").notNull(), // Enum types
   banned: boolean("banned").default(false),
   banReason: text("ban_reason"),
   banExpires: timestamp("ban_expires"),
 });
+export type IUser=InferModel<typeof user>
 
 export const session = pgTable(
   "session",
@@ -90,7 +99,7 @@ export const documentsTable = pgTable("documents", {
   // Human info
   title: text("title").notNull(),
   description: text("description"),
-
+  
   // Source tracking
   source: text("source"), 
   sourceUrl: text("source_url"),
@@ -103,19 +112,25 @@ export const documentsTable = pgTable("documents", {
   userId: text("userId").references(() => user.id, { onDelete: "cascade" }).notNull(),
 
   // Stats
+  status: documentStatusEnum("status").default("processing").notNull(),
   documentType: text("document_type").notNull(),
   chunkCount: integer("chunk_count").default(0),
   tokenCount: integer("token_count"),
+  contentLength:integer("content_length").default(0),
+  vectorCount:integer("vector_count").default(0),
   size: text("size").notNull(),
 
+  // Progress: 0 to 100
+  progress: integer("progress").default(0).notNull(),
 
   // Timestamps
+  completedAt: timestamp("completed_at"),
   createdAt: timestamp("created_at").defaultNow().notNull(),
   updatedAt: timestamp("updated_at")
       .$onUpdate(() => /* @__PURE__ */ new Date())
       .notNull(),
 });
-
+export type IDocument=InferModel<typeof documentsTable>
 
 
 // relations
