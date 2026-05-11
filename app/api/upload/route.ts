@@ -32,7 +32,7 @@ export async function POST(req: NextRequest) {
 
   // check if there is a document which it`s status is uploading or processing
    const activeDocuments=await getProcessingDocumentsByUser(session.user.id)
-   if(activeDocuments.length===0){
+   if(activeDocuments.length>0){
     return NextResponse.json(
       {
         error: `There is an active process for ${activeDocuments.length} documents. Please wait for it to complete before uploading a new document.`,
@@ -88,12 +88,12 @@ const sourceUrl = formData.get("sourceUrl") as string;
         title: file.name,
         userId: session.user.id,
         status: "uploading",
-        documentType: file.type.split("/")[1] || "application/octet-stream",
+        documentType: file.type.split("/")[1].toLowerCase() || "application/octet-stream",
         size: fileSize,
         source: source || "local",
         sourceUrl: sourceUrl || null,
         isActive: true,
-        progress: 0,
+        progress: 20,
       }
       // console.log("document to upload: ",document)
       const newDocument=await createDocument(document as any);
@@ -122,14 +122,14 @@ const uploadResult = await new Promise((resolve, reject) => {
 });
 
 const fileUrl = (uploadResult as any).secure_url;
-    console.log("file: ",file)
+    // console.log("file: ",file)
     await inngest.send({
         name: "app/document.upload",
         data: {
     documentId: newDocument.id,
     fileUrl,
     fileName: file.name,        // ✅ from the file object
-    fileType: newDocument.documentType.split("/")[1],
+    fileType: file.type.split("/")[1].toLowerCase(),
 },
     });
 

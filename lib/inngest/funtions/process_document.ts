@@ -20,7 +20,7 @@ export const uploadDocument = inngest.createFunction(
       // Convert back to File object
       const file = new File([arrayBuffer], fileName, { type: fileType });
       let content=""
-  console.log(fileType)
+  console.log("fileType on inngest functions: ",fileType)
           switch(fileType){
         case"pdf":
         content=await extractTextFromPDF({file,documentId});
@@ -44,11 +44,11 @@ export const uploadDocument = inngest.createFunction(
       return content
     });
 
-    console.log("Extracted text:", text);
+    // console.log("Extracted text:", text);
      await step.run("updating-document-status", async()=>{
       await updateDocument(documentId,{
         status:"processing",
-        progress:32
+        progress:35
       });
     });
 
@@ -69,7 +69,7 @@ export const uploadDocument = inngest.createFunction(
 
       await step.run("updating-document-progress", async()=>{
       await updateDocument(documentId,{
-        progress:70
+        progress:75
       });
     });
    const resultPinecone=await step.run("saving-vectors-to-pinecone", async()=>{

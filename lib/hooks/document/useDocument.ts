@@ -43,25 +43,37 @@ export const useUploadDocument = () => {
 // use get document by id
 export const useGetProcessingDocuments = () => {
   
-    return useQuery({
-        queryKey: ["processing-documents"],
-        queryFn: () => documentService.getProcessingDocuments(),
-        staleTime:1000*10,
-        retry:1,
-        refetchInterval:(query)=>{
-            const data=query.state.data?.data as IDocument[]
-            if(!data || data?.length===0){
-                return false
-            }
-            const hasProcessing = data.some((item)=>item.status==="uploading"||item.status==="processing")
-            if(hasProcessing){
-                return 3000
-            }
-            return false
-        }
-    })
-}
+return useQuery({
+    queryKey: ["processing-documents"],
+    queryFn: () => documentService.getProcessingDocuments(),
 
+    // ❗ make data always stale
+    staleTime: 0,
+
+    // ❗ optional: remove cache completely
+    gcTime: 0,
+
+    retry: 1,
+
+    refetchInterval: (query) => {
+        const data = query.state.data?.data as IDocument[];
+
+        if (!data || data.length === 0) {
+            return false;
+        }
+
+        const hasProcessing = data.some(
+            (item) =>
+                item.status === "uploading" ||
+                item.status === "processing"
+        );
+
+        return hasProcessing ? 1500 : false;
+    },
+
+    refetchOnWindowFocus: true, // ✅ better for “instant feel”
+});
+}
 
 // use get document by id
 export const useGetDocumentById = (id: string) => {
@@ -77,13 +89,6 @@ export const useGetDocumentById = (id: string) => {
         queryFn: () => documentService.getDocumentById(id),
         staleTime:1000*10,
         retry:2,
-        refetchInterval:(query)=>{
-            const data=query.state.data?.data as IDocument
-            if(data?.status==="completed"||data?.status==="failed"){
-                return false
-            }
-            return 5000
-        }
     })
 }
 

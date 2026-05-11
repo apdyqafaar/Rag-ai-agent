@@ -107,7 +107,7 @@ export const getSimilarity = async (
        })
     }
 
-    console.log("Sources of pinecone: ", source)
+    // console.log("Sources of pinecone: ", source)
     return source
   } catch (error) {
     console.error("Error querying Pinecone for similarity:", error);

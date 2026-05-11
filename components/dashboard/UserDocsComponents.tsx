@@ -163,6 +163,10 @@ function EmptyState() {
       <p className="max-w-xs text-center text-sm text-muted-foreground mt-1">
         Upload a document or adjust your filters to get started.
       </p>
+      <Link href={"/dashboard/user/documents"}>
+        <Button variant="secondary" className="mt-3 text-sm">Upload Documents</Button>
+      </Link>
+    
     </div>
   )
 }

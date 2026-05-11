@@ -6,6 +6,7 @@ import {
 } from "@/db/actions/document";
 import { headers } from "next/headers";
 import { NextResponse } from "next/server";
+import { deleteMany } from "@/lib/ai";
 
 export async function GET(
   req: Request,
@@ -121,6 +122,7 @@ export async function DELETE(
         { status: 401 }
       );
     }
+    await deleteMany(id)
 
     const document = await getDocumentById(id);
 

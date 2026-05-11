@@ -12,6 +12,11 @@ export const documentStatusEnum=pgEnum('document_status',[
   "completed",
   "uploading"
 ])
+export const messageRoleEnum=pgEnum('message_role',[
+  "user",
+  "assistant",
+  "system"
+])
 export const user = pgTable("user", {
   id: text("id").primaryKey(),
   name: text("name").notNull(),
@@ -132,12 +137,34 @@ export const documentsTable = pgTable("documents", {
 });
 export type IDocument=InferModel<typeof documentsTable>
 
+export const conversationsTable = pgTable("conversations", {
+  id: text("id").primaryKey(),
+  documentId: text("document_id").references(() => documentsTable.id, { onDelete: "cascade" }).notNull(),
+  title: text("title"),
+  userId: text("userId").references(() => user.id, { onDelete: "cascade" }).notNull(),
+  createdAt: timestamp("created_at").defaultNow().notNull(),
+  updatedAt: timestamp("updated_at")
+      .$onUpdate(() => /* @__PURE__ */ new Date())
+      .notNull(),
+});
+export type IConversation=InferModel<typeof conversationsTable>
+
+export const messagesTable = pgTable("messages", {
+  id: text("id").primaryKey(),
+  conversationId: text("conversation_id").references(() => conversationsTable.id, { onDelete: "cascade" }).notNull(),
+  role: messageRoleEnum("role").notNull(),
+  content: text("content").notNull(),
+  createdAt: timestamp("created_at").defaultNow().notNull(),
+});
+export type IMessage=InferModel<typeof messagesTable>
+
 
 // relations
 export const userRelations = relations(user, ({ many }) => ({
   documents: many(documentsTable),
   sessions: many(session),
   accounts: many(account),
+  conversations: many(conversationsTable),
 }));
 
 export const sessionRelations = relations(session, ({ one }) => ({
@@ -161,7 +188,20 @@ export const documentRelations = relations(documentsTable, ({ one }) => ({
   }),
 }));
 
+export const conversationRelations = relations(conversationsTable, ({ one, many }) => ({
+  owner: one(user, {
+    fields: [conversationsTable.userId],
+    references: [user.id],
+  }),
+  messages: many(messagesTable),
+}));
 
+export const messageRelations = relations(messagesTable, ({ one }) => ({
+  conversation: one(conversationsTable, {
+    fields: [messagesTable.conversationId],
+    references: [conversationsTable.id],
+  }),
+}));
 
 // exporting the schema
 export const schema={
@@ -170,6 +210,8 @@ export const schema={
     session,
     verification,
     documentsTable,
+    conversationsTable,
+    messagesTable,
 }
 
 
