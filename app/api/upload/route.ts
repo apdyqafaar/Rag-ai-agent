@@ -1,13 +1,9 @@
-import { auth } from "@/lib/auth";
-import { db } from "@/db/db";
-import { documentsTable } from "@/db/schema/schema";
-import { NextRequest, NextResponse } from "next/server";
-import { useGenerateId } from "@/lib/hooks";
-import { UploadFileRoutePayload } from "@/lib/types/document.types";
 import { createDocument, getProcessingDocumentsByUser } from "@/db/actions";
-import { inngest } from "@/lib/inngest/client";
+import { auth } from "@/lib/auth";
 import cloudinary from "@/lib/cloudinary/config";
-import { user } from "@/lib/permissions";
+import { useGenerateId } from "@/lib/hooks";
+import { inngest } from "@/lib/inngest/client";
+import { NextRequest, NextResponse } from "next/server";
 
 export async function POST(req: NextRequest) {
   // 1. Authenticate user
@@ -35,7 +31,7 @@ export async function POST(req: NextRequest) {
    if(activeDocuments.length>0){
     return NextResponse.json(
       {
-        error: `There is an active process for ${activeDocuments.length} documents. Please wait for it to complete before uploading a new document.`,
+        error: `There is an active process for ${activeDocuments.length} documents. Please wait for it to complete before uploading a new document. or cancel it`,
       },
       { status: 403 },
     );
@@ -66,10 +62,10 @@ const sourceUrl = formData.get("sourceUrl") as string;
       ![
         "application/pdf",
         "text/plain",
-        "application/msword",
-        "application/vnd.openxmlformats-officedocument.wordprocessingml.document",
-        "application/vnd.ms-excel",
-        "application/vnd.openxmlformats-officedocument.spreadsheetml.sheet",
+        // "application/msword",
+        // "application/vnd.openxmlformats-officedocument.wordprocessingml.document",
+        // "application/vnd.ms-excel",
+        // "application/vnd.openxmlformats-officedocument.spreadsheetml.sheet",
       ].includes(file.type)
     ) {
       return NextResponse.json(

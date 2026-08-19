@@ -1,5 +1,6 @@
 import { updateDocument } from "@/db/actions"
 
+// this extracts the document and loads it
 export async function extractTextFromPDF({file,documentId}:{file:File,documentId:string}):Promise<string>{
     try {
           const {PDFLoader}=await import("@langchain/community/document_loaders/fs/pdf")

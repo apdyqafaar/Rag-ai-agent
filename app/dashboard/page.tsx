@@ -3,7 +3,7 @@ import { getDashboardPath, UserRole } from '@/lib/config'
 import { useUser } from '@/lib/context'
 import { redirect } from 'next/navigation'
 
-const dashboardPage = async() => {
+const dashboardPage =() => {
   // const user=await auth.api.getSession({
   //       headers:await headers()
   //   })

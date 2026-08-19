@@ -13,6 +13,7 @@ export const uploadDocument = inngest.createFunction(
   async ({ event, step }) => {
      const {documentId, fileUrl,fileName, fileType}=event.data
 
+    //  download and load the the document
      const text = await step.run("extract-text", async () => {
       const response = await fetch(fileUrl);
       const arrayBuffer = await response.arrayBuffer();
@@ -52,6 +53,7 @@ export const uploadDocument = inngest.createFunction(
       });
     });
 
+    // chunk and process the document
     const {content,chunks} = await step.run("chunk-document", async () => {
       return await processDocument({text,documentId, filetype:fileType, filename:fileName});
     });
@@ -63,6 +65,7 @@ export const uploadDocument = inngest.createFunction(
       });
     });
    
+    // generating the embeddings
    const {embeddings,tokens}= await step.run("generate-embedding", async()=>{
      return await generateSingleEmbeddings(chunks)
     })

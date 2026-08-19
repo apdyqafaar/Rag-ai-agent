@@ -1,6 +1,8 @@
-import {openai} from "@ai-sdk/openai"
+// import {openai} from "@ai-sdk/openai"
+import { openrouter } from "@openrouter/ai-sdk-provider"
 import {embed, embedMany} from "ai"
-const embedding_model=openai.embedding("text-embedding-3-small", )
+// const embedding_model=openai.embedding("text-embedding-3-small", )
+const embedding_model = openrouter.textEmbeddingModel("openai/text-embedding-3-small")
 
 
 export async function generateSingleEmbedding(text:string):Promise<{embedding:number[],tokens:number}>{

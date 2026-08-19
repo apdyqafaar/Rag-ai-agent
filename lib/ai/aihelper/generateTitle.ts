@@ -1,5 +1,6 @@
-import { openai } from "@ai-sdk/openai";
+// import { openai } from "@ai-sdk/openai";
 import { generateText } from "ai";
+import {OpenAI} from "openai"
 
 export interface TitleMessage {
   role: "user" | "assistant";
@@ -12,7 +13,14 @@ export interface TitleMessage {
  *
  * @param messages - Array of conversation messages (role + content)
  * @returns A concise title string for the conversation
+ * 
+ * 
  */
+
+const openai=new OpenAI({
+ apiKey: process.env.OPENAI_API_KEY!,
+    baseURL: "https://openrouter.ai/api/v1",
+})
 export async function generateConversationTitle(
   messages: TitleMessage[]
 ): Promise<string> {
@@ -23,17 +31,28 @@ export async function generateConversationTitle(
     .map((msg) => `${msg.role === "user" ? "User" : "Assistant"}: ${msg.content}`)
     .join("\n");
 
-  const { text } = await generateText({
-    model: openai("gpt-4.1-mini"),
-    system: `You are a helpful assistant that generates concise, descriptive titles for conversations.
+const completion = await openai.chat.completions.parse({
+  model: "gpt-5.6-luna",
+  messages: [
+    {
+      role: "system",
+      content: `You are a helpful assistant that generates concise, descriptive titles for conversations.
 The title should:
 - Be 3-8 words long
 - Capture the main topic or intent of the conversation
 - Be written in title case
 - NOT include quotes, punctuation at the end, or labels like "Title:"
 Respond with only the title text, nothing else.`,
-    prompt: `Based on the following conversation snippet, generate a short title:\n\n${conversationSnippet}`,
-  });
+    },
+    {
+      role: "user",
+      content: `Based on the following conversation snippet, generate a short title:
+
+${conversationSnippet}`,
+    },
+  ],
+});
+const text = completion.choices[0].message.content as string;
 
   return text.trim();
 }
