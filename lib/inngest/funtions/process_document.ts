@@ -1,11 +1,10 @@
 
-import { processDocument } from "@/lib/document";
-import { inngest } from "../client";
 import { updateDocument } from "@/db/actions";
-import { generateSingleEmbeddings } from "@/lib/ai/embedding";
-import { rerank } from "ai";
 import { saveVectorsToPinecone } from "@/lib/ai";
+import { generateSingleEmbeddings } from "@/lib/ai/embedding";
+import { processDocument } from "@/lib/document";
 import { extractTextFromPDF } from "@/lib/document/pdf_processor";
+import { inngest } from "../client";
 
 export const uploadDocument = inngest.createFunction(
   { id: "upload-document",

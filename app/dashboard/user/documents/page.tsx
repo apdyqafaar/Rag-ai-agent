@@ -3,9 +3,8 @@
 import { ProcessingDocumentsList } from "@/components/dashboard/ProcessingDocuments";
 import UploadDocument from "@/components/dashboard/upload-doxument";
 import { Card, CardContent } from "@/components/ui/card";
-import { IDocument } from "@/db/schema";
 import { useUser } from "@/lib/context";
-import { useGetDocumentById, useGetProcessingDocuments, useUploadDocument } from "@/lib/hooks";
+import { useGetProcessingDocuments, useUploadDocument } from "@/lib/hooks";
 import { UploadFile } from "@/lib/types/document.types";
 import { useState } from "react";
 import { toast } from "sonner";

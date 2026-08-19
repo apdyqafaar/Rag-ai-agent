@@ -23,9 +23,9 @@ export async function POST(req: Request) {
       return new Response("Unauthorized", { status: 401 });
     }
     const { messages, message: singleMessage, selectedDocumentId, conversationId } = await req.json();
-    console.log("messages", messages)
-    console.log("singleMessage", singleMessage)
-    console.log("selectedDocumentId", selectedDocumentId)
+    // console.log("messages", messages)
+    // console.log("singleMessage", singleMessage)
+    // console.log("selectedDocumentId", selectedDocumentId)
 
     // first check if conversations exists
     const conversation = await getConversationById(conversationId)

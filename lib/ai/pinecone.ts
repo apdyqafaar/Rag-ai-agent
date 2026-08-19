@@ -21,7 +21,7 @@ function pineconeConnection(): Pinecone {
 // get pinecone index
 export function getPineconeIndex() {
   const client = pineconeConnection();
-  return client.Index(process.env.PINECONE_INDEX_NAME! || "rag-document");
+  return client.Index(process.env.PINECONE_INDEX_NAME! || "rag-test");
 }
 
 /**
