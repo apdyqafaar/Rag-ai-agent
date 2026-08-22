@@ -1,8 +1,9 @@
 CREATE TYPE "public"."document_status" AS ENUM('processing', 'failed', 'completed', 'uploading');--> statement-breakpoint
+CREATE TYPE "public"."message_role" AS ENUM('user', 'assistant', 'system');--> statement-breakpoint
 CREATE TYPE "public"."user_role" AS ENUM('user', 'admin', 'moderator');--> statement-breakpoint
 CREATE TABLE "account" (
 	"id" text PRIMARY KEY NOT NULL,
-	"account_id" text NOT NULL,
+	"issuer" text,
 	"provider_id" text NOT NULL,
 	"user_id" text NOT NULL,
 	"access_token" text,
@@ -12,6 +13,15 @@ CREATE TABLE "account" (
 	"refresh_token_expires_at" timestamp,
 	"scope" text,
 	"password" text,
+	"created_at" timestamp DEFAULT now() NOT NULL,
+	"updated_at" timestamp NOT NULL
+);
+--> statement-breakpoint
+CREATE TABLE "conversations" (
+	"id" text PRIMARY KEY NOT NULL,
+	"document_id" text NOT NULL,
+	"title" text,
+	"userId" text NOT NULL,
 	"created_at" timestamp DEFAULT now() NOT NULL,
 	"updated_at" timestamp NOT NULL
 );
@@ -36,6 +46,14 @@ CREATE TABLE "documents" (
 	"completed_at" timestamp,
 	"created_at" timestamp DEFAULT now() NOT NULL,
 	"updated_at" timestamp NOT NULL
+);
+--> statement-breakpoint
+CREATE TABLE "messages" (
+	"id" text PRIMARY KEY NOT NULL,
+	"conversation_id" text NOT NULL,
+	"role" "message_role" NOT NULL,
+	"content" text NOT NULL,
+	"created_at" timestamp DEFAULT now() NOT NULL
 );
 --> statement-breakpoint
 CREATE TABLE "session" (
@@ -76,7 +94,10 @@ CREATE TABLE "verification" (
 );
 --> statement-breakpoint
 ALTER TABLE "account" ADD CONSTRAINT "account_user_id_user_id_fk" FOREIGN KEY ("user_id") REFERENCES "public"."user"("id") ON DELETE cascade ON UPDATE no action;--> statement-breakpoint
+ALTER TABLE "conversations" ADD CONSTRAINT "conversations_document_id_documents_id_fk" FOREIGN KEY ("document_id") REFERENCES "public"."documents"("id") ON DELETE cascade ON UPDATE no action;--> statement-breakpoint
+ALTER TABLE "conversations" ADD CONSTRAINT "conversations_userId_user_id_fk" FOREIGN KEY ("userId") REFERENCES "public"."user"("id") ON DELETE cascade ON UPDATE no action;--> statement-breakpoint
 ALTER TABLE "documents" ADD CONSTRAINT "documents_userId_user_id_fk" FOREIGN KEY ("userId") REFERENCES "public"."user"("id") ON DELETE cascade ON UPDATE no action;--> statement-breakpoint
+ALTER TABLE "messages" ADD CONSTRAINT "messages_conversation_id_conversations_id_fk" FOREIGN KEY ("conversation_id") REFERENCES "public"."conversations"("id") ON DELETE cascade ON UPDATE no action;--> statement-breakpoint
 ALTER TABLE "session" ADD CONSTRAINT "session_user_id_user_id_fk" FOREIGN KEY ("user_id") REFERENCES "public"."user"("id") ON DELETE cascade ON UPDATE no action;--> statement-breakpoint
 CREATE INDEX "account_userId_idx" ON "account" USING btree ("user_id");--> statement-breakpoint
 CREATE INDEX "session_userId_idx" ON "session" USING btree ("user_id");--> statement-breakpoint

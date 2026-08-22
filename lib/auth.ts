@@ -1,6 +1,6 @@
 
 import { betterAuth } from "better-auth/minimal"; 
-import { drizzleAdapter } from "better-auth/adapters/drizzle";
+import { drizzleAdapter } from "@better-auth/drizzle-adapter";
 import {schema} from "../db/schema/index"
 import { nextCookies } from "better-auth/next-js";
 import { db } from "@/db/db";
@@ -14,8 +14,11 @@ export const auth = betterAuth({
     }),
      emailAndPassword:{
         enabled:true,
-        autoSignIn:false
     },
+     logger: {
+        level: "debug",
+    },
+    
     
     socialProviders: {
         google: { 

@@ -1,1 +1,0 @@
-ALTER TABLE "user" ADD COLUMN "test" text DEFAULT 'test' NOT NULL;
